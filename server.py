@@ -7,12 +7,14 @@ class Server:
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.sock.bind(("", port))
         self.peers = {}  # Keeps track of connected peers in format {IP:PORT}
+        self.port = port
 
     # Returns a string version of the peers dictionary without curly brackets
     def peers_to_str(self):
         return str(self.peers)[1:-1]
 
     def listen(self):
+        print("Listening on port {0}".format(self.port))
         while True:
             addr = self.sock.recvfrom(1024)[1]
             print("Connection request from: {0} on port {1}".format(addr[0], addr[1]))
