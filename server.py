@@ -3,9 +3,9 @@ import socket
 
 class Server:
 
-    def __init__(self):
+    def __init__(self, port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-        self.sock.bind(("", 5005))
+        self.sock.bind(("", port))
         self.peers = {}  # Keeps track of connected peers in format {IP:PORT}
 
     # Returns a string version of the peers dictionary without curly brackets
@@ -22,5 +22,5 @@ class Server:
             self.peers[addr[0]] = addr[1]
 
 
-s = Server()
+s = Server(5005)
 s.listen()

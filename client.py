@@ -5,15 +5,17 @@ from time import sleep
 
 class Client:
 
-    def __init__(self):
+    def __init__(self, ip, port):
         self.sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         self.peers = {}
+        self.ip = ip
+        self.port = port
 
     def conn_request(self):
         data = b'\xf3\xf3'
         while data == b'\xf3\xf3':
             print("Sending connection request...")
-            self.sock.sendto(b'', ("139.162.210.80", 5005))
+            self.sock.sendto(b'', (self.ip, self.port))
             data = self.sock.recvfrom(1024)[0]
             sleep(5)
         self.peers = self.peers_to_dict(data)
@@ -35,7 +37,7 @@ class Client:
             self.sock.sendto(b'\xf1\xf1', (ip, port))
 
     def update_peers(self):
-        self.sock.sendto(b'', ("139.162.210.80", 5005))
+        self.sock.sendto(b'', (self.ip, self.port))
 
     def keep_alive(self):
         while True:
@@ -75,6 +77,6 @@ class Client:
                 self.sock.sendto(bytes(msg, 'UTF-8'), (ip, port))
 
 
-c = Client()
+c = Client("139.162.210.80", 5005)
 c.conn_request()
 c.start_chat()
