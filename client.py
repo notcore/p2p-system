@@ -1,3 +1,10 @@
+"""
+This class represents a single client on the network.
+Currently transitions to a chat application after successful connection.
+
+Source for NAT Hole Punching Technique: https://bford.info/pub/net/p2pnat/
+"""
+
 import socket
 import threading
 from time import sleep
@@ -70,13 +77,13 @@ class Client:
         recv_thread.start()
         keep_alive_thread.start()  # Does hole punching on first pass
 
-        print("Connect to network. You can now chat.")
+        print("Connected to network. You can now chat.")
         while True:
             msg = input('')
             for ip, port in self.peers.items():
                 self.sock.sendto(bytes(msg, 'UTF-8'), (ip, port))
 
 
-c = Client("139.162.210.80", 5005)
+c = Client("212.111.41.51", 5005)
 c.conn_request()
 c.start_chat()

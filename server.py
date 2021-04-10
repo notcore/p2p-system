@@ -1,3 +1,10 @@
+"""
+This class represents an access server on the network. It's purpose
+is to provide information about the network so that incoming clients know
+who to connect to.
+
+"""
+
 import socket
 
 
