@@ -8,6 +8,7 @@ Source for NAT Hole Punching Technique: https://bford.info/pub/net/p2pnat/
 import socket
 import threading
 from time import sleep
+from ast import literal_eval
 
 
 class Client:
@@ -30,18 +31,17 @@ class Client:
     @staticmethod
     def peers_to_dict(peers_str):
         new_peers = {}
-        peers_str = peers_str[2:].decode("UTF-8")
-        peers_list = peers_str.split(", ")
+        peers_str = peers_str[2:-1].decode("UTF-8")
+        peers_list = peers_str.split("|")
         for addr in peers_list:
-            addr = addr.split(": ")
-            new_peers[addr[0][1:-1]] = int(addr[1])
+            new_peers.update(literal_eval("{"+addr+"}"))
         return new_peers
 
     # Stops the connection from closing because of idling
     # Works by sending out a 2 byte-sized packet every 10 seconds
     def idle_packets(self):
-        for ip, port in self.peers.items():
-            self.sock.sendto(b'\xf1\xf1', (ip, port))
+        for addr in self.peers.values():
+            self.sock.sendto(b'\xf1\xf1', (addr[0], addr[1]))
 
     def update_peers(self):
         self.sock.sendto(b'', (self.ip, self.port))
@@ -80,10 +80,10 @@ class Client:
         print("Connected to network. You can now chat.")
         while True:
             msg = input('')
-            for ip, port in self.peers.items():
-                self.sock.sendto(bytes(msg, 'UTF-8'), (ip, port))
+            for addr in self.peers.values():
+                self.sock.sendto(bytes(msg, 'UTF-8'), (addr[0], addr[1]))
 
 
-c = Client("212.111.41.51", 5005)
+c = Client("178.79.154.241", 5005)
 c.conn_request()
 c.start_chat()
